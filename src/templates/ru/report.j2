@@ -1,0 +1,13 @@
+{{ today.strftime('%d.%m.%Y') }}
+
+План:{% for x in events_today %}
+ - {{ x.name_with_status }}{{ ";" if not loop.last else "." }}{% else %}
+ - плана не было.{% endfor %}
+
+Факт:{% for x in commits %}
+ - {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ - ничего не было сделано.{% endfor %}
+
+{% if is_friday %}На понедельник{% else %}Завтра{% endif %}:{% for x in events_tomorrow %}
+ - {{ x.name }}{{ ";" if not loop.last else "." }}{% else %}
+ - пока ничего.{% endfor %}

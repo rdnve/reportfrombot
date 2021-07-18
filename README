@@ -1,0 +1,7 @@
+## just another simple bot.
+
+```sh
+$ poetry install && poetry shell
+$ cp .env.example .env
+$ cd src && python main.py
+```
