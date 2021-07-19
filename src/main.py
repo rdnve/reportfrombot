@@ -17,11 +17,13 @@ def main():
         url=S.CALENDAR_URL,
     )()
 
-    commits = ListCommitService(
-        project_id=S.API_GITLAB_PROJECTS[0],
-        date=today,
-        email=S.EMAIL,
-    )()
+    commits = []
+    for project_id in S.API_GITLAB_PROJECTS:
+        commits += ListCommitService(
+            project_id=project_id,
+            date=today,
+            email=S.EMAIL,
+        )()
 
     rendered_report = rts(
         'ru/report.j2',
@@ -35,7 +37,7 @@ def main():
     if not S.DEBUG:
         SendMessageService(body=rendered_report)()
     else:
-        sys.stdout.write(rendered_report + '\n')
+        sys.stdout.write(rendered_report + '\n\n')
 
 
 if __name__ == '__main__':
