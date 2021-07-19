@@ -41,5 +41,9 @@ class ListCommitService:
                 break
             if commit.committer_email != self.email:
                 continue
-            res.append(commit.title)
+            res.append({
+                'title': commit.title,
+                'url': commit.web_url,
+                'id': commit.id[:8],
+            })
         return res

@@ -5,7 +5,7 @@
  - плана не было.{% endfor %}
 
 <b>Факт:</b>{% for x in commits %}
- - {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ - <a href="{{ x.url }}">{{ x.title }}</a>{{ ";" if not loop.last else "." }}{% else %}
  - ничего не было сделано.{% endfor %}
 
 <b>{% if is_friday %}На понедельник{% else %}Завтра{% endif %}</b>:{% for x in events_tomorrow %}
