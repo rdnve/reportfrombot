@@ -50,7 +50,7 @@ class ListEventService:
                 'is_done': bool(event.url),
                 'name_with_status': '{} {}'.format(
                     event.name,
-                    '(готово)' if event.url else '',
+                    '<i>(готово)</i>' if event.url else '',
                 ).strip(),
             })
         return res

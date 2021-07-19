@@ -21,5 +21,9 @@ class SendMessageService:
         return self.send_message()
 
     def send_message(self) -> int:
-        obj = self.bot.send_message(self.chat_id, str(self.body))
+        obj = self.bot.send_message(
+            self.chat_id,
+            str(self.body),
+            parse_mode='HTML',
+        )
         return obj.id
