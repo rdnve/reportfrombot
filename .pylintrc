@@ -1,0 +1,12 @@
+[MASTER]
+load-plugins = pylint_env_vars
+
+[MESSAGES CONTROL]
+
+disable = all
+enable = os-environ-prohibited,C0412
+output-format = parseable
+
+
+[pylint_env_vars]
+allow_in_modules = _devtools|tests

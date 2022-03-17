@@ -11,7 +11,7 @@ class SendMessageService:
     """
     Just another service for sending some messages.
     """
-    
+
     def __init__(self, body: str, chat_id: Optional[int] = S.CHAT_ID):
         self.body = body
         self.chat_id = chat_id
@@ -24,6 +24,6 @@ class SendMessageService:
         obj = self.bot.send_message(
             self.chat_id,
             str(self.body),
-            parse_mode='HTML',
+            parse_mode="HTML",
         )
         return obj.id

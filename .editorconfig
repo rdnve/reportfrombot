@@ -1,14 +1,23 @@
+root = true
+
 [*]
-    indent_style    = space
-    indent_size     = 2
-    max_line_length = 0
+    charset = utf-8
+    end_of_line = lf
+    insert_final_newline = true
+    trim_trailing_whitespace = true
+    indent_style = space
+    indent_size = 4
 
 [*.py]
-    indent_size      = 4
+    max_line_length = 88
 
-[*.json]
-    indent_style    = space
-    indent_size     = 2
+[{*.json, *.yml}]
+    indent_size = 2
+    insert_final_newline = false
 
-[*.yaml]
+[*.html]
+    indent_size = 2
+    max_line_length = 200
+
+[{.babelrc, .stylelintrc, .eslintrc, jest.config, *.jsb3, *.jsb2, *.bowerrc, *.scss, *.js, *.css, *.jsx, *.ts, *.tsx}]
     indent_size = 2

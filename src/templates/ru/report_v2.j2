@@ -1,0 +1,3 @@
+<b>{{ title }}</b>{% for x in blocks %}
+{% if x.type == "heading_2" %}
+<i>{{ x.text }}</i>{% else %}» {{ x.text }}{% endif %}{% endfor %}
