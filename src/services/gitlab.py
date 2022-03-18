@@ -5,7 +5,7 @@ import typing as ty
 import datetime as dt
 import gitlab
 
-from core import settings as S
+from core import settings
 
 
 class ListCommitService:
@@ -17,7 +17,7 @@ class ListCommitService:
         self,
         project_id: int,
         date: dt.date,
-        email: ty.Optional[str] = S.EMAIL,
+        email: ty.Optional[str] = settings.EMAIL,
     ):
         self.project_id = project_id
         self.email = email
@@ -25,8 +25,8 @@ class ListCommitService:
 
     def __call__(self) -> ty.Tuple[str, ty.List[any]]:
         self.gl = gitlab.Gitlab(
-            S.API_GITLAB_URL,
-            private_token=S.API_GITLAB_KEY,
+            settings.API_GITLAB_URL,
+            private_token=settings.API_GITLAB_KEY,
         )
         self.project = self.gl.projects.get(self.project_id)
         return self.get_committs()

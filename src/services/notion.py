@@ -2,6 +2,8 @@
 
 import typing as ty
 
+import datetime as dt
+
 from core.requests import session
 from core.settings import NOTION_PAGE_ID, NOTION_TOKEN, NOTION_VERSION
 
@@ -13,50 +15,53 @@ class NotionReportService:
     Get all blocks from some Notion page.
     """
 
-    def __init__(self, page_id: ty.Optional[str] = NOTION_PAGE_ID) -> None:
+    def __init__(
+        self,
+        page_id: ty.Optional[str] = NOTION_PAGE_ID,
+        today: ty.Optional[dt.date] = None,
+    ) -> None:
         self.page_id = page_id
+        self.today = today if today else dt.date.today()
         self.headers = {
             "Authorization": f"Bearer {NOTION_TOKEN}",
             "Notion-Version": NOTION_VERSION,
         }
-
-    def __call__(self) -> ty.Dict[str, ty.Any]:
-        title = self.get_page_title()
-        blocks = self.get_page_blocks()
-        return dict(
-            title=title,
-            blocks=blocks,
+        self.blocks = dict(
+            nothing=list(), in_process=list(), done=list(), tomorrow=list()
         )
 
-    def make_request(self, url: str) -> dict:
-        return session.get(f"{NOTION_DOMAIN}/{url}", headers=self.headers).json()
+    def __call__(self) -> ty.Dict[str, ty.List[str]]:
+        data = self.get_data()
+        for item in data:
+            state = self.get_state(payload=item)
+            text = self.get_text(payload=item)
+            self.blocks[state].append(text)
+        return self.blocks
 
-    def get_page_title(self) -> str:
-        res = self.make_request(f"pages/{self.page_id}")
-        return res["properties"]["title"]["title"][0]["plain_text"]
+    def get_text(self, payload: dict) -> ty.Optional[str]:
+        item = payload["properties"]["Name"]["title"]
+        if not item:
+            return
+        return item[0]["plain_text"]
 
-    def get_page_blocks(self) -> ty.List[ty.Dict[str, ty.Any]]:
-        data = list()
-        res = self.make_request(f"blocks/{self.page_id}/children")
-        for item in res["results"]:
-            type_ = item["type"]
-            body = item[type_]["rich_text"]
+    def get_state(self, payload: dict) -> str:
+        select = payload["properties"]["Status"]["select"]
+        if not select:
+            return "nothing"
+        return (
+            payload["properties"]["Status"]["select"]["name"].replace(" ", "_").lower()
+        )
 
-            if not body:
-                continue
+    def get_data(self) -> ty.List[ty.Dict[str, ty.Any]]:
+        res = self.make_post_request(f"databases/{self.page_id}/query")
+        return res["results"]
 
-            if type_ == "heading_2":
-                obj = dict(
-                    type=type_,
-                    text=body[0]["plain_text"],
-                    is_done=None,
-                )
-            else:
-                obj = dict(
-                    type=type_,
-                    text=body[0]["plain_text"],
-                    is_done=item[type_]["checked"],
-                )
-            data.append(obj)
-
-        return data
+    def make_post_request(self, url: str) -> dict:
+        query_url = f"{NOTION_DOMAIN}/{url}"
+        data = {
+            "filter": {
+                "property": "Date",
+                "date": {"equals": self.today.strftime("%Y-%m-%d")},
+            }
+        }
+        return session.post(query_url, json=data, headers=self.headers).json()

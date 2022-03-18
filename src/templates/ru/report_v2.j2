@@ -1,3 +1,10 @@
-<b>{{ title }}</b>{% for x in blocks %}
-{% if x.type == "heading_2" %}
-<i>{{ x.text }}</i>{% else %} » {{ x.text }}{% endif %}{% endfor %}
+<b>{{ today.strftime("%d.%m.%Y") }}</b>
+
+{% if data.done %}<i>Факт</i>{% for x in data.done %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
+
+{% if data.nothing %}<i>Не успел</i>{% for x in data.nothing %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
+
+{% if data.tomorrow %}<i>{{ "Новая неделя" if is_friday else "Завтра" }}</i>{% for x in data.tomorrow %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
