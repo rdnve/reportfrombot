@@ -4,7 +4,7 @@ from typing import Optional
 
 import telebot
 
-from core import settings as S
+from core import settings
 
 
 class SendMessageService:
@@ -12,12 +12,12 @@ class SendMessageService:
     Just another service for sending some messages.
     """
 
-    def __init__(self, body: str, chat_id: Optional[int] = S.CHAT_ID):
+    def __init__(self, body: str, chat_id: Optional[int] = settings.CHAT_ID):
         self.body = body
         self.chat_id = chat_id
 
     def __call__(self) -> int:
-        self.bot = telebot.TeleBot(S.API_TELEGRAM, parse_mode=None)
+        self.bot = telebot.TeleBot(settings.API_TELEGRAM, parse_mode=None)
         return self.send_message()
 
     def send_message(self) -> int:
