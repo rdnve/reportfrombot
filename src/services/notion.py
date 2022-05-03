@@ -39,10 +39,11 @@ class NotionReportService:
         return self.blocks
 
     def get_text(self, payload: dict) -> ty.Optional[str]:
-        item = payload["properties"]["Name"]["title"]
-        if not item:
-            return
-        return item[0]["plain_text"]
+        text: str = ""
+        items = payload["properties"]["Name"]["title"]
+        for item in items:
+            text += item["plain_text"]
+        return text
 
     def get_state(self, payload: dict) -> str:
         select = payload["properties"]["Status"]["select"]
