@@ -55,7 +55,7 @@ class NotionReportService:
 
     def get_data(self) -> ty.List[ty.Dict[str, ty.Any]]:
         res = self.make_post_request(f"databases/{self.page_id}/query")
-        return res["results"]
+        return sorted(res["results"], key=lambda x: x["last_edited_time"])
 
     def make_post_request(self, url: str) -> dict:
         query_url = f"{NOTION_DOMAIN}/{url}"
