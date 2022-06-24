@@ -73,6 +73,8 @@ class MergeRequestSyncYouTrackService:
         project = self.gl.projects.get(id=self.project_id)
         for mr in project.mergerequests.list(state="opened"):
             task_id = self.extract_task_id(value=mr.title)
+            if task_id is None:
+                continue
             summary = self.get_youtrack_summary(task_id=task_id)
             new_title = f"{task_id} {summary}"
             if mr.draft:
