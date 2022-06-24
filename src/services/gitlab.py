@@ -75,6 +75,8 @@ class MergeRequestSyncYouTrackService:
             task_id = self.extract_task_id(value=mr.title)
             summary = self.get_youtrack_summary(task_id=task_id)
             new_title = f"{task_id} {summary}"
+            if mr.draft:
+                new_title = f"Draft: {new_title}"
             if new_title != mr.title:
                 mr.title = new_title
                 mr.save()
