@@ -62,7 +62,7 @@ def main():
     ).replace("\n__null__\n", "")
 
     markup_keyboard = SendMessageService.get_button_markup(
-        text="Обновить данные",
+        text=f"Обновлено от {dt.datetime.now().strftime('%d.%m.%y %H:%M')}",
         callback_data=today.strftime("%Y-%m-%d"),
     )
 
