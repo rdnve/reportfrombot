@@ -56,7 +56,13 @@ def extract_from_notion():
     ).replace("\n__null__\n", "")
 
     if data["nothing"] or data["done"] or data["tomorrow"]:
-        SendMessageService(body=rendered_report)()
+        SendMessageService(
+            body=rendered_report,
+            button=dict(
+                text="Обновить данные",
+                callback_data=today.strftime("%Y-%m-%d"),
+            ),
+        )()
 
 
 if __name__ == "__main__":
