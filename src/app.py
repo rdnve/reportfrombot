@@ -74,6 +74,11 @@ def main():
             parse_mode="HTML",
             reply_markup=markup_keyboard,
         )
+        b.answer_callback_query(
+            callback_query_id=int(callback_id),
+            text="Обновлено.",
+            show_alert=False,
+        )
     except telebot.apihelper.ApiTelegramException as e:
         logger.warning(f"{e}")
         b.answer_callback_query(
