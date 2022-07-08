@@ -27,7 +27,11 @@ class NotionReportService:
             "Notion-Version": NOTION_VERSION,
         }
         self.blocks = dict(
-            nothing=list(), in_process=list(), done=list(), tomorrow=list()
+            nothing=list(),
+            in_process=list(),
+            done=list(),
+            tomorrow=list(),
+            additionally=list(),
         )
 
     def __call__(self) -> ty.Dict[str, ty.List[str]]:

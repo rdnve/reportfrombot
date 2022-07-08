@@ -3,8 +3,14 @@
 {% if data.done %}<i>Факт</i>{% for x in data.done %}
  » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
 
-{% if data.nothing %}<i>Не успел или не закончил</i>{% for x in data.nothing %}
+{% if data.in_process %}<i>В работе</i>{% for x in data.in_process %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}__null__{% endif %}
+
+{% if data.nothing %}<i>Бэклог</i>{% for x in data.nothing %}
  » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}__null__{% endif %}
 
 {% if data.tomorrow %}<i>{{ "Новая неделя" if is_friday else "Завтра" }}</i>{% for x in data.tomorrow %}
  » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
+
+{% if data.additionally %}<i>Дополнительно</i>{% for x in data.additionally %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}{% endif %}

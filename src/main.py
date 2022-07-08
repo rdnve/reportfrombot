@@ -55,7 +55,15 @@ def extract_from_notion():
         is_friday=bool(today.isoweekday() in {5, 6, 7}),
     ).replace("\n__null__\n", "")
 
-    if data["nothing"] or data["done"] or data["tomorrow"]:
+    if any(
+        [
+            data["nothing"],
+            data["done"],
+            data["tomorrow"],
+            data["in_process"],
+            data["additionally"],
+        ]
+    ):
         SendMessageService(
             body=rendered_report,
             button=dict(
