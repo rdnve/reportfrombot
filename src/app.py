@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import typing as ty
+
 import argparse
 import datetime as dt
 import json
@@ -16,22 +18,38 @@ from services import (
     SendMessageService,
 )
 
+if ty.TYPE_CHECKING:
+    from flask.wrappers import Response
+
 app = Flask(__name__)
 
 logger = logging.getLogger(__name__)
 
 
-@app.route("/__receive", methods=["GET", "POST"])
-def main():
-    body = request.json or request.form
+@app.route("/receive", methods=["GET", "POST"])
+def main() -> "Response":
+    body: ty.Dict[str, ty.Any] = request.json or request.form
+    message: ty.Optional[ty.Dict[str, ty.Any]] = body.get("message", None)
+    callback: ty.Optional[ty.Dict[str, ty.Any]] = body.get("callback_query", None)
     logger.warning(f"Request body: {json.dumps(body, ensure_ascii=False)}")
 
-    if "callback_query" not in body:
+    if not any([message, callback]):
         return jsonify(ok=True)
 
-    callback = body["callback_query"]
-    callback_id = callback["id"]
+    b = telebot.TeleBot(settings.API_TELEGRAM)
 
+    if message and "reply_to_message" in message:
+        b.send_message(
+            chat_id=message["chat"]["id"],
+            text="Ничего не понял, сейчас позову @rdnve.",
+            reply_to_message_id=message["message_id"],
+        )
+        return jsonify(ok=True)
+
+    if not callback:
+        return jsonify(ok=True)
+
+    callback_id = callback["id"]
     message_id = int(callback["message"]["message_id"])
     chat_id = callback["message"]["chat"]["id"]
     data = callback["data"]
@@ -41,8 +59,6 @@ def main():
     except ParserError as e:
         logger.warning(f"Parse error: {e}")
         return jsonify(ok=True)
-
-    b = telebot.TeleBot(settings.API_TELEGRAM)
 
     if (dt.date.today() - parsed_datetime.date()).days > 2:
         b.answer_callback_query(
@@ -81,12 +97,16 @@ def main():
         )
     except telebot.apihelper.ApiTelegramException as e:
         logger.warning(f"{e}")
-        b.answer_callback_query(
-            callback_query_id=int(callback_id),
-            text="Отчёт не изменялся, поэтому, обновлять нечего.",
-            show_alert=True,
-            cache_time=10,
-        )
+
+        try:
+            b.answer_callback_query(
+                callback_query_id=int(callback_id),
+                text="Отчёт не изменялся, поэтому, обновлять нечего.",
+                show_alert=True,
+                cache_time=10,
+            )
+        except telebot.apihelper.ApiTelegramException as e:
+            logger.warning(f"{e}")
 
     logger.warning(
         (
