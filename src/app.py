@@ -26,7 +26,7 @@ app = Flask(__name__)
 logger = logging.getLogger(__name__)
 
 
-@app.route("/receive", methods=["GET", "POST"])
+@app.route("/__receive", methods=["GET", "POST"])
 def main() -> "Response":
     body: ty.Dict[str, ty.Any] = request.json or request.form
     message: ty.Optional[ty.Dict[str, ty.Any]] = body.get("message", None)
