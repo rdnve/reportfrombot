@@ -39,6 +39,10 @@ def main() -> "Response":
     b = telebot.TeleBot(settings.API_TELEGRAM)
 
     if message and "reply_to_message" in message:
+        from_id = message["reply_to_message"]["from"]["id"]
+        if from_id != settings.FROM_ID:
+            return jsonify(ok=True)
+
         b.send_message(
             chat_id=message["chat"]["id"],
             text="Ничего не понял, сейчас позову @rdnve.",

@@ -14,6 +14,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 # for telegram
 API_TELEGRAM = os.getenv("API_TELEGRAM")
 CHAT_ID = int(os.getenv("CHAT_ID"))
+FROM_ID = os.getenv("FROM_ID")
 
 # for commits and other
 API_GITLAB_URL = os.getenv("API_GITLAB_URL")
