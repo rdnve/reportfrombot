@@ -1,16 +1,20 @@
 <b>{{ today.strftime("%d.%m.%Y") }}</b>
 
-{% if data.done %}<i>Факт</i>{% for x in data.done %}
- » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
+<i>Факт</i>{% for x in data.done %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ » Похоже, кое-кто сегодня бездельничал.{% endfor %}
 
-{% if data.in_process %}<i>В работе</i>{% for x in data.in_process %}
- » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}__null__{% endif %}
+<i>Горячий бэклог</i>{% for x in data.hot_backlog %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ » Задач в горячем бэклоге пока нет.{% endfor %}
 
-{% if data.nothing %}<i>Бэклог</i>{% for x in data.nothing %}
- » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}__null__{% endif %}
+ <i>Холодный бэклог</i>{% for x in data.cold_backlog %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ » Задач в холодном бэклоге не найдены.{% endfor %}
 
-{% if data.tomorrow %}<i>{{ "Новая неделя" if is_friday else "Завтра" }}</i>{% for x in data.tomorrow %}
- » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% endif %}
+<i>{{ "Новая неделя" if is_friday else "Завтра" }}</i>{% for x in data.tomorrow %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ » Задачи ещё не перенесены.{% endfor %}
 
 {% if data.additionally %}<i>Дополнительно</i>{% for x in data.additionally %}
  » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}{% endif %}

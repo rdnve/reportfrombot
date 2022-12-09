@@ -1,5 +1,3 @@
-# coding: utf-8
-
 import datetime as dt
 import sys
 
@@ -53,11 +51,12 @@ def extract_from_notion():
         data=data,
         today=today,
         is_friday=bool(today.isoweekday() in {5, 6, 7}),
-    ).replace("\n__null__\n", "")
+    ).strip()
 
     if any(
         [
-            data["nothing"],
+            data["cold_backlog"],
+            data["hot_backlog"],
             data["done"],
             data["tomorrow"],
             data["in_process"],
@@ -67,7 +66,7 @@ def extract_from_notion():
         SendMessageService(
             body=rendered_report,
             button=dict(
-                text="Обновить данные",
+                text="Обновить отчёт",
                 callback_data=today.strftime("%Y-%m-%d"),
             ),
         )()

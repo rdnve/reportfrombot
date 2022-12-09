@@ -1,12 +1,10 @@
-# coding: utf-8
-
 import typing as ty
 
 import datetime as dt
 import requests
 from ics import Calendar
 
-from services.indexes import DELTA_DAYS
+from .indexes import DELTA_DAYS
 
 
 class ListEventService:

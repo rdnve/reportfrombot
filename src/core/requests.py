@@ -1,5 +1,3 @@
-# coding: utf-8
-
 import requests as requests_core
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry

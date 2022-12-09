@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from jinja2 import Template
 
 from core.settings import BASE_DIR
