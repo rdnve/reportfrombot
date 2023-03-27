@@ -62,7 +62,7 @@ def main() -> "Response":
         logger.warning(f"Parse error: {e}")
         return jsonify(ok=True)
 
-    if (dt.date.today() - parsed_datetime.date()).days > 2:
+    if (dt.date.today() - parsed_datetime.date()).days > 3:
         b.answer_callback_query(
             callback_query_id=int(callback_id),
             text="Обновлять можно только за текущий и вчерашний день.",
@@ -73,7 +73,7 @@ def main() -> "Response":
     today = parsed_datetime.date()
     data = NotionReportService(today=today)()
     rendered_report = rts(
-        "ru/report_v2.j2",
+        "ru/report_v3.j2",
         data=data,
         today=today,
         is_friday=bool(today.isoweekday() in {5, 6, 7}),
@@ -111,10 +111,8 @@ def main() -> "Response":
             logger.warning(f"{e}")
 
     logger.warning(
-        (
-            f"Data: {json.dumps(data, ensure_ascii=False)}, "
-            f"callback: {json.dumps(callback, ensure_ascii=False)}"
-        )
+        f"Data: {json.dumps(data, ensure_ascii=False)}, "
+        f"callback: {json.dumps(callback, ensure_ascii=False)}"
     )
 
     return jsonify(ok=True)
