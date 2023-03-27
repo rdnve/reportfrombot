@@ -1,0 +1,12 @@
+<b>{{ today.strftime("%d.%m.%Y") }}</b>
+
+<i>Факт</i>{% for x in data.done %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ » Похоже, кое-кто сегодня бездельничал.{% endfor %}
+
+<i>{{ "Новая неделя" if is_friday else "Завтра" }}</i>{% for x in data.tomorrow %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% else %}
+ » Задачи ещё не перенесены.{% endfor %}
+
+{% if data.additionally %}<i>Дополнительно</i>{% for x in data.additionally %}
+ » {{ x }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}{% endif %}

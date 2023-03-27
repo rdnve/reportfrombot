@@ -47,7 +47,7 @@ def extract_from_notion():
     today = dt.date.today()
     data = NotionReportService(today=today)()
     rendered_report = rts(
-        "ru/report_v2.j2",
+        "ru/report_v3.j2",
         data=data,
         today=today,
         is_friday=bool(today.isoweekday() in {5, 6, 7}),
@@ -55,11 +55,11 @@ def extract_from_notion():
 
     if any(
         [
-            data["cold_backlog"],
-            data["hot_backlog"],
+            # data["cold_backlog"],
+            # data["hot_backlog"],
             data["done"],
             data["tomorrow"],
-            data["in_process"],
+            # data["in_process"],
             data["additionally"],
         ]
     ):
