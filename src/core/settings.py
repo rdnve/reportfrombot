@@ -22,6 +22,9 @@ API_GITLAB_PROJECTS = json.loads(os.getenv("API_GITLAB_PROJECTS", "[]"))
 # just my email
 EMAIL = os.getenv("EMAIL")
 
+# everyday scrum
+ZOOM_URL = os.getenv("ZOOM_URL")
+
 # calendar endpoints
 CALENDAR_URL = os.getenv("CALENDAR_URL")
 
