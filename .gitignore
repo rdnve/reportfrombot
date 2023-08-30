@@ -122,3 +122,4 @@ src/frontend/static/js/*
 # remove static files
 static
 .ver
+result.txt
