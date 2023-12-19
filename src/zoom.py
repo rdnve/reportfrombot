@@ -2,6 +2,7 @@ import typing as ty
 
 import argparse
 import logging
+import random
 from telebot import TeleBot
 from telebot.apihelper import ApiTelegramException
 from telebot.types import Message
@@ -31,12 +32,21 @@ class NotifyService:
                 users.append(f"@{item.user.username}")
             else:
                 users.append(
-                    f'<a href="tg://user?id={item.user.id}">{item.user.first_name}</a>'
+                    '<a href="tg://user?id={}">{}</a>'.format(
+                        item.user.id,
+                        item.user.first_name,
+                    )
                 )
+
+        random.shuffle(users)
+        lines: ty.List[str] = [f"{self.zoom_url}", "\n\n"]
+        lines.extend(users[0 : len(users) - 1])
+        text = f"{self.zoom_url}\n\n" + ", ".join(users[0 : len(users) - 1])
+        text += f" и {users[-1]}."
 
         msg: Message = self.bot.send_message(
             chat_id=self.chat_id,
-            text=f"{self.zoom_url}\n\n{', '.join(users)}.",
+            text=text,
             disable_web_page_preview=True,
         )
         return msg.id
