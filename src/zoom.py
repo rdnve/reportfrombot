@@ -3,6 +3,7 @@ import typing as ty
 import argparse
 import logging
 import random
+import requests
 from telebot import TeleBot
 from telebot.apihelper import ApiTelegramException
 from telebot.types import Message
@@ -20,6 +21,21 @@ class NotifyService:
         self.bot: TeleBot = TeleBot(token=token, parse_mode="HTML")
         self.chat_id: str = chat_id
         self.zoom_url: str = zoom_url
+
+    @property
+    def is_day_off(self) -> bool:
+        try:
+            res: str = requests.get("https://isdayoff.ru/today", timeout=5).text
+        except Exception as e:
+            logger.exception(e)
+            return False
+        else:
+            if res == "1":
+                return True
+            elif res == "0":
+                return False
+            else:
+                return False
 
     def send_message(self) -> int:
         users: ty.List[str] = list()
@@ -88,6 +104,9 @@ if __name__ == "__main__":
         chat_id=settings.CHAT_ID,
         zoom_url=settings.ZOOM_URL,
     )
+
+    if service.is_day_off:
+        exit(0)
 
     if args.action == "send":
         service.get_or_save_message_id(value=service.send_message())
