@@ -28,14 +28,10 @@ class NotifyService:
             res: str = requests.get("https://isdayoff.ru/today", timeout=5).text
         except Exception as e:
             logger.exception(e)
-            return False
         else:
             if res == "1":
                 return True
-            elif res == "0":
-                return False
-            else:
-                return False
+        return False
 
     def send_message(self) -> int:
         users: ty.List[str] = list()
