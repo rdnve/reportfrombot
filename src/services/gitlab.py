@@ -58,7 +58,7 @@ class MergeRequestSyncYouTrackService:
 
     def __init__(self, project_id: int):
         self.project_id = project_id
-        self.url = f"https://{settings.API_YOUTRACK_DOMAIN}/youtrack/api"
+        self.url = f"https://{settings.API_YOUTRACK_DOMAIN}/api"
         self.headers = {
             "Authorization": f"Bearer {settings.API_YOUTRACK_TOKEN}",
         }
