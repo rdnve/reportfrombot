@@ -9,4 +9,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.sync == "youtrack":
-        MergeRequestSyncYouTrackService(project_id=settings.API_GITLAB_PROJECTS[0])()
+        for project_id in settings.API_GITLAB_PROJECTS:
+            MergeRequestSyncYouTrackService(project_id=project_id)()
