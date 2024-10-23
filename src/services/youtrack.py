@@ -102,6 +102,7 @@ class YouTrackReportService:
 
             issues.append(raw)
 
+        issues.reverse()
         return issues
 
     def get_board_name(self, issue_id: str) -> str:
