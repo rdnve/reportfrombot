@@ -123,3 +123,4 @@ src/frontend/static/js/*
 static
 .ver
 result.txt
+run.py

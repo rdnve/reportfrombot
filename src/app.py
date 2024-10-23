@@ -5,15 +5,13 @@ import datetime as dt
 import json
 import logging
 import telebot
-from dateutil.parser import ParserError, parse
 from flask import Flask, jsonify, request
 
 from core import settings
-from core.render import render_to_string as rts
 from services import (
     MergeRequestSyncYouTrackService,
-    NotionReportService,
     SendMessageService,
+    YouTrackReportService,
 )
 
 if ty.TYPE_CHECKING:
@@ -57,36 +55,40 @@ def main() -> "Response":
     data = callback["data"]
 
     try:
-        parsed_datetime = parse(data)
-    except ParserError as e:
+        raw_keys = data.split("_")
+        board_name, report_at = raw_keys[0], dt.date.fromisoformat(raw_keys[1])
+    except Exception as e:
         logger.warning(f"Parse error: {e}")
         return jsonify(ok=True)
 
-    if (dt.date.today() - parsed_datetime.date()).days > 3:
-        b.answer_callback_query(
-            callback_query_id=int(callback_id),
-            text="Обновлять можно только за текущий и вчерашний день.",
-            show_alert=True,
-        )
-        return jsonify(ok=True)
+    if dt.date.today() != report_at:
+        try:
+            b.answer_callback_query(
+                callback_query_id=int(callback_id),
+                text="Отчёт уже устарел, его нельзя повторно обновить.",
+                show_alert=True,
+            )
+        except Exception as e:
+            return jsonify(ok=True)
+        else:
+            return jsonify(ok=True)
 
-    today = parsed_datetime.date()
-    data = NotionReportService(today=today)()
-    rendered_report = rts(
-        "ru/report_v3.j2",
-        data=data,
-        today=today,
-        is_friday=bool(today.isoweekday() in {5, 6, 7}),
-    ).replace("\n__null__\n", "")
+    try:
+        key, report = YouTrackReportService(
+            board_name=board_name, report_at=report_at
+        ).get_report()
+    except Exception as e:
+        logger.warning(f"Sync error: {e}")
+        return jsonify(ok=True)
 
     markup_keyboard = SendMessageService.get_button_markup(
         text=f"Обновлено от {dt.datetime.now().strftime('%d.%m.%y %H:%M')}",
-        callback_data=today.strftime("%Y-%m-%d"),
+        callback_data=key,
     )
 
     try:
         b.edit_message_text(
-            rendered_report,
+            report,
             chat_id,
             message_id,
             parse_mode="HTML",
@@ -123,6 +125,13 @@ if __name__ == "__main__":
     parser.add_argument("--sync", type=str, default="")
     args = parser.parse_args()
 
-    # if args.sync == "youtrack":
-    for project_id in settings.API_GITLAB_PROJECTS:
-        MergeRequestSyncYouTrackService(project_id=project_id)()
+    if args.sync == "youtrack":
+        for project_id in settings.API_GITLAB_PROJECTS:
+            MergeRequestSyncYouTrackService(project_id=project_id)()
+    elif args.sync == "report":
+        key, report = YouTrackReportService().get_report()
+        SendMessageService(
+            body=report, button=dict(text="Обновить отчёт", callback_data=key)
+        )()
+    else:
+        raise Exception("???")

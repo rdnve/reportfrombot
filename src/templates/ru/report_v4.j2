@@ -1,0 +1,3 @@
+<b>{{ today.strftime("%d/%m") }}</b>
+{% if issues %}{% for x in issues %}
+ - <a href="{{ x.url }}">{{ x.issue_id }}</a> {{ x.summary }}{{ ";" if not loop.last else "." }}{% endfor %}{% else %}Похоже, кое-кто сегодня бездельничал.{% endif %}

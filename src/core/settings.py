@@ -13,6 +13,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 API_TELEGRAM = os.getenv("API_TELEGRAM")
 CHAT_ID = int(os.getenv("CHAT_ID"))
 FROM_ID = os.getenv("FROM_ID")
+USER_TIMEZONES = json.loads(os.getenv("USER_TIMEZONES", "[]"))
 
 # for commits and other
 API_GITLAB_URL = os.getenv("API_GITLAB_URL")
@@ -36,3 +37,4 @@ NOTION_VERSION = os.getenv("NOTION_VERSION")
 # youtrack
 API_YOUTRACK_TOKEN = os.getenv("API_YOUTRACK_TOKEN")
 API_YOUTRACK_DOMAIN = os.getenv("API_YOUTRACK_DOMAIN")
+API_YOUTRACK_USERNAME = os.getenv("API_YOUTRACK_USERNAME")
