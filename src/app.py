@@ -8,6 +8,7 @@ import telebot
 from flask import Flask, jsonify, request
 
 from core import settings
+from core.utils import is_allowed_to_update
 from services import (
     MergeRequestSyncYouTrackService,
     SendMessageService,
@@ -61,7 +62,7 @@ def main() -> "Response":
         logger.warning(f"Parse error: {e}")
         return jsonify(ok=True)
 
-    if dt.date.today() != report_at:
+    if not is_allowed_to_update(report_at=report_at):
         try:
             b.answer_callback_query(
                 callback_query_id=int(callback_id),
