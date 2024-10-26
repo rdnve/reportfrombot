@@ -8,7 +8,7 @@ import telebot
 from flask import Flask, jsonify, request
 
 from core import settings
-from core.utils import is_allowed_to_update
+from core.utils import is_allowed_to_update, is_dayoff
 from services import (
     MergeRequestSyncYouTrackService,
     SendMessageService,
@@ -130,6 +130,9 @@ if __name__ == "__main__":
         for project_id in settings.API_GITLAB_PROJECTS:
             MergeRequestSyncYouTrackService(project_id=project_id)()
     elif args.sync == "report":
+        if is_dayoff():
+            exit(0)
+
         key, report = YouTrackReportService().get_report()
         SendMessageService(
             body=report, button=dict(text="Обновить отчёт", callback_data=key)

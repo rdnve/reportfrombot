@@ -1,6 +1,11 @@
 import typing as ty
 
 import datetime as dt
+import logging
+
+from core.requests import session
+
+logger = logging.getLogger(__name__)
 
 
 def plural(value: str, quantitative: ty.Tuple[ty.Any]) -> ty.Any:
@@ -20,5 +25,17 @@ def is_allowed_to_update(report_at: dt.date) -> bool:
 
     if today != report_at:
         return False
+
+    return False
+
+
+def is_dayoff() -> bool:
+    try:
+        res: str = session.get("https://isdayoff.ru/today", timeout=5).text
+    except Exception as e:
+        logger.exception(e)
+    else:
+        if res == "1":
+            return True
 
     return False
