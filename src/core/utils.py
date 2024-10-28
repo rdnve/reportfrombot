@@ -20,11 +20,12 @@ def plural(value: str, quantitative: ty.Tuple[ty.Any]) -> ty.Any:
 
 def is_allowed_to_update(report_at: dt.date) -> bool:
     today = dt.date.today()
-    if report_at.isoweekday() in {5, 6, 7} and (today - report_at).days < 3:
+
+    if today == report_at:
         return True
 
-    if today != report_at:
-        return False
+    if report_at.isoweekday() in {5, 6, 7} and (today - report_at).days < 3:
+        return True
 
     return False
 
