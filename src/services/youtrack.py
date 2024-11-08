@@ -17,6 +17,7 @@ class YouTrackReportService:
     """Just sync your tasks"""
 
     FIELD_POINT_ID: str = "111-28"
+    FIELD_TYPE_ID: str = "79-43"
 
     def __init__(
         self, board_name: str = "Current sprint", report_at: dt.date = dt.date.today()
@@ -83,22 +84,32 @@ class YouTrackReportService:
             ],
             query_params={
                 "$top": "-1",
-                "fields": "summary,idReadable,fields(id(111-28),value)",
+                "fields": ",".join(
+                    [
+                        "summary",
+                        "idReadable",
+                        f"fields(id({self.FIELD_POINT_ID}),value)",
+                        f"fields(id({self.FIELD_TYPE_ID}),value(name))",
+                    ]
+                ),
             },
         )
 
         issues = list()
         for item in res:
             raw = {
-                "issue_id": item["idReadable"],
-                "summary": item["summary"],
+                "issue_id": item["idReadable"].strip(),
+                "summary": item["summary"].strip(),
                 "url": f'{self.base_url}/issue/{item["idReadable"]}',
                 "point": "?",
+                "type": None,
             }
             for field in item["fields"]:
                 if field["id"] == self.FIELD_POINT_ID:
                     raw["point"] = field["value"]
-                    break
+
+                if field["id"] == self.FIELD_TYPE_ID:
+                    raw["type"] = raw["type"] = field["value"]["name"][:1].upper()
 
             issues.append(raw)
 
